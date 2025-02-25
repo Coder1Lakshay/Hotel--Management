@@ -1,0 +1,8 @@
+package com.starhotel.service.impl;
+
+import jakarta.validation.constraints.NotBlank;
+
+public class EmailService {
+    public void sendEmail(@NotBlank(message = "Email is required") String email, String passwordReset, String s) {
+    }
+}
