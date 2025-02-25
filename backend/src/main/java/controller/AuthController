@@ -1,0 +1,68 @@
+package com.starhotel.controller;
+
+import com.starhotel.dto.ForgotPasswordRequest;
+import com.starhotel.dto.LoginRequest;
+import com.starhotel.dto.ResetPasswordRequest;
+import com.starhotel.dto.Response;
+import com.starhotel.entity.User;
+import com.starhotel.service.interfac.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+
+    @Autowired
+    private
+    IUserService userService;
+
+    @PostMapping("/register")
+    public ResponseEntity<Response> register(@RequestBody User user) {
+        Response response = userService.register(user);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Response> login(@RequestBody LoginRequest loginRequest) {
+        Response response = userService.login(loginRequest);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        userService.handleForgotPassword(request.getEmail());
+        return ResponseEntity.ok(new Response("Password reset email sent."));
+    }
+
+//    @PostMapping("/reset-password")
+//    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+//        userService.resetPassword(request.getToken(), request.getNewPassword());
+//        return ResponseEntity.ok(new Response("Password reset email sent."));
+//    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+        String email = request.getEmail();
+        String newPassword = request.getNewPassword();
+
+        // Call the service to reset the password
+        userService.updatePassword(email, newPassword);
+
+        return ResponseEntity.ok(new Response("Password reset successfully."));
+    }
+
+
+
+
+}
+
+
+
+
